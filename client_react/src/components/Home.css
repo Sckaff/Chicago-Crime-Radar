@@ -1,0 +1,18 @@
+.background {
+    background-image: url("https://cdn.choosechicago.com/uploads/2019/05/loop-1800x900.jpg");
+    background-size: "cover";
+    height: 110vh;
+    background-repeat:no-repeat; 
+    opacity: 0.9;
+  
+  }
+
+  .block {
+    background-color: rgba(128, 128, 128); /* gray with 50% opacity */
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    opacity: 0.85;
+  }
