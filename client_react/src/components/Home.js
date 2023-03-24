@@ -17,6 +17,7 @@ const Home = () => {
                 areas to travel that statistically have lower crime rates.
                 <button onClick={() => window.location = '/myradar'} class="header-button">Get Started!</button>
               </p>
+           
           </div>
         </div>
     </div>
