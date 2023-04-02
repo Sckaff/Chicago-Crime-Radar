@@ -1,9 +1,8 @@
 import React, {useState, useContext} from 'react'
-import { UserContext } from '../../dataContext/UserContext'
+import { data } from '../../dataContext/data'
 import './MyArea.css'
 
 const MyArea = () => {
-  const{userGraph, setUserGraph} = useContext(UserContext)
 
 
   return (
@@ -11,6 +10,14 @@ const MyArea = () => {
         
         <h1> MyArea </h1>
         <button onClick={() => window.location = '/form'} className="button">Create Analysis</button>
+
+        <div>
+          {
+            data.map((graph) => (
+              <p>{graph.name}</p>
+            ))
+          }
+        </div>
 
     </div>
   )

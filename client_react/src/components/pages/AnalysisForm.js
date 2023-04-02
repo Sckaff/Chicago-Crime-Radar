@@ -1,19 +1,19 @@
 
 import './AnalysisForm.css'
 import React, {useState, useContext} from 'react'
-import { UserContext } from '../../dataContext/UserContext'
 import { Select, MenuItem, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
-import { graphData } from '../../dataContext/data';
+import { data } from '../../dataContext/data';
+
 
 
 const AnalysisForm = () => {
-  const{userGraph, setUserGraph} = useContext(UserContext)
+  const{userGraph, setUserGraph} = useState([])
   const[district, setDistrict] = useState("")
   const[zipCode, setZipCode] = useState("")
   const[name, setName] = useState("")
+  const graphData = [];
   let navigate = useNavigate();
-  // var myObject = JSON.parse(graphData);
 
   const districtHandler = (event) =>{
     setDistrict(event.target.value)
@@ -27,17 +27,15 @@ const AnalysisForm = () => {
     setName(event.target.value)
   }
 
-  const addToData = () => {
-    const data = {
+  const addToDataHandler = (event) => {
+    data.push({
       district: district,
       zipCode: zipCode,
       name: name
-    }
+    })
     console.log(data)
-    // setUserGraph(userGraph.push(data))
-    // myObject.push(data)
-    // console.log(myObject)
     navigate('/myarea', {replace: true});
+
   }
 
 
@@ -79,7 +77,7 @@ const AnalysisForm = () => {
             
             <TextField id="outlined-basic" onChange={nameHandler} variant="outlined" style={{ marginTop: 0, marginLeft: 0 , width:250}} />
           </div>
-          <button className='form-button' onClick={addToData}>Submit</button>
+          <button className='form-button' onClick={addToDataHandler}>Submit</button>
       </div>
     </div>
   )
