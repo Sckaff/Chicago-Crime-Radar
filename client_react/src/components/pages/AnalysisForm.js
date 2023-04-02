@@ -2,7 +2,7 @@
 import './AnalysisForm.css'
 import React, {useState, useContext} from 'react'
 import { UserContext } from '../../dataContext/UserContext'
-import { Select, MenuItem, TextField } from '@material-ui/core';
+import { Select, MenuItem, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
 import { graphData } from '../../dataContext/data';
 
