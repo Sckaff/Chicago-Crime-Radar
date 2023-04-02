@@ -8,7 +8,7 @@ const MyArea = () => {
 
   return (
     <div className='container'>
-        {console.log(userGraph)}
+        
         <h1> MyArea </h1>
         <button onClick={() => window.location = '/form'} className="button">Create Analysis</button>
 
