@@ -2,11 +2,12 @@ package main
  
 import (
     "net/http"
-    "fmt"
-    "database/sql"
+    // "fmt"
+    // "database/sql"
     _ "github.com/godror/godror"
     "github.com/gin-gonic/gin"
     "server_golang/models"
+    "github.com/gin-contrib/cors"
 )
 
 type Body struct {
@@ -15,61 +16,23 @@ type Body struct {
   }
 
 func main(){
+    //To run: go run main.go
 
-
-    
-    db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    defer db.Close()
-
-    rows,err := db.Query("select zipcode from location")
-
-    if err != nil {
-        fmt.Println("Error running query")
-        fmt.Println(err)
-        return
-    }
-    defer rows.Close()
- 
-    var value string
-    for rows.Next() {
- 
-        rows.Scan(&value)
-    }
-    fmt.Printf("The date is: %s\n", value)
-
-
+    //CRUD commands & CORS to allow HTTP Requests
     router := gin.Default()
+    router.Use(cors.Default())
     router.GET("/p", getP)
     router.POST("/points", getPoints)
+
+    //Run on Port localhost:8080
     router.Run("localhost:8080")
-    // defer db.Close()
 
-   
-     
-     /* Just to test if the database is working*/
-
-    // rows,err := db.Query("select balance from account")
-    // if err != nil {
-    //     fmt.Println("Error running query")
-    //     fmt.Println(err)
-    //     return
-    // }
-    // defer rows.Close()
- 
-    // var value string
-    // for rows.Next() {
- 
-    //     rows.Scan(&value)
-    // }
-    // fmt.Printf("The date is: %s\n", value)
 }
 
 func getPoints(c *gin.Context) {
 
+    //Body is a Struct (Look Line 13) go ahead
+    //Customize Body based on what is passed to API from frontend
     body:=Body{}
 
     if err:=c.BindJSON(&body);err!=nil{
@@ -77,14 +40,19 @@ func getPoints(c *gin.Context) {
         return
     }
   
+    //Calls the Function with SQL from SQLDB.go
+    
     points:= models.GetPoints(body.Time)
 
+    
+    //Allows for Json response
     c.IndentedJSON(http.StatusOK, points)
 }
 
 func getP(c *gin.Context) {
 
     point := models.GetP()
+    
     c.IndentedJSON(http.StatusOK, point)
 }
 

@@ -8,9 +8,8 @@ import (
 	"fmt"
 )
 
-
-
 func GetPoints(time string) *string {
+	//Change Password depending on your own Oracle SQL
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	
     if err != nil {
@@ -27,7 +26,7 @@ func GetPoints(time string) *string {
 	return (&time)
 }
 
-func GetP() *int {
+func GetP() *string {
 	
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -37,24 +36,27 @@ func GetP() *int {
 
 	defer db.Close()
 
-	// rows,err := db.Query("SELECT zipcode FROM location")
+	rows,err := db.Query("SELECT zipcode FROM location")
 
-	// if err != nil {
+	if err != nil {
 
-	// 	fmt.Println("Err", err.Error())
+		fmt.Println("Err", err.Error())
 
-	// 	return nil
+		return nil
 
-	// }
+	}
 
-	// var value string
-    // for rows.Next() {
+	defer rows.Close()
+
+	var value string
+    for rows.Next() {
  
-    //     rows.Scan(&value)
-    // }
-	// fmt.Printf("The date is: %s\n", value)
+        rows.Scan(&value)
+		fmt.Printf("The date is: %s\n", value)
+		
+    }
 
-	var x int
-	x = 4
+	var x string
+	x = value
 	return &x
 }

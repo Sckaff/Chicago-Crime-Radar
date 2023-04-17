@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import './MyRadar.css'
 
 import ProgressBar from "green-red-react-progress-bar";
@@ -9,6 +10,8 @@ const MyRadar = () => {
     const [showTime, setShowTime] = useState(date.getHours());
     var timeListTemp = []
     const [timeList, setTimeList] = useState([])
+
+    const [val, setValue] = useState()
 
     const setCircleColor = (value) => {
         if (value < 50) {
@@ -43,6 +46,12 @@ const MyRadar = () => {
         setTimeList(timeListTemp)
     }, []) 
 
+    useEffect (() => {
+        axios.get(`http://localhost:8080/p`).then((response)=>{
+          setValue(response.data)
+        })
+      }, [])
+
   return (
     <div>
         <div className="container">
@@ -57,6 +66,7 @@ const MyRadar = () => {
                 roundProgressbar= {false}
             />
         </div>
+        <p>{val}</p>
 
 
         <div className="container2">
