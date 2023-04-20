@@ -1,13 +1,16 @@
 package main
- 
+
 import (
-    "net/http"
-    // "fmt"
-    // "database/sql"
-    _ "github.com/godror/godror"
-    "github.com/gin-gonic/gin"
-    "server_golang/models"
-    "github.com/gin-contrib/cors"
+	// "fmt"
+	"net/http"
+	// "fmt"
+	// "database/sql"
+    // "strconv"
+	"server_golang/models"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	_ "github.com/godror/godror"
 )
 
 type Body struct {
@@ -27,6 +30,28 @@ type returnQuery1 struct {
     Data2 []models.HourlyCrimeType
 }
 
+type Query2Body struct {
+    ZipCode string      `json:"zipCode"`
+    CrimeType string    `json:"crimeType"`
+}
+
+type QueryMaxMin2Body struct {
+    CrimeType string    `json:"crimeType"`
+}
+
+type Query4Body struct {
+    Latitude string      `json:"latitude"`
+    Longitude string       `json:"longitude"`
+    Business string     `json:"business"`
+    CrimeType1 string   `json:"crimeType1"`
+    CrimeType2 string   `json:"crimeType2"`
+}
+
+type returnQuery4 struct {
+    Data1 []models.CrimeTypeLatLong
+    Data2 []models.CrimeTypeLatLong
+}
+
 
 
 func main(){
@@ -38,6 +63,12 @@ func main(){
 
     router.POST("/query1", getHourlyCrimeType)
     router.GET("/crimetypes", getCrimeTypes)
+    router.POST("/query2", getZipCodeWithCrimeType)
+    router.POST("/query2Max", getMaxZipCode)
+    router.POST("/query2Min", getMinZipCode)
+    router.POST("/query3", getMonthlyQuery3)
+    router.POST("/query4", getLatLongQuery4)
+    
 
 
     router.GET("/p", getP)
@@ -48,6 +79,7 @@ func main(){
 
 }
 
+//Helper Queries
 func getCrimeTypes(c *gin.Context) {
 
     data := models.GetCrimeTypes()
@@ -56,6 +88,8 @@ func getCrimeTypes(c *gin.Context) {
 
 }
 
+
+//Query 1
 func getHourlyCrimeType(c *gin.Context) {
     query1Body := Query1Body{}
 
@@ -74,6 +108,83 @@ func getHourlyCrimeType(c *gin.Context) {
 
     c.IndentedJSON(http.StatusOK, result)
     // c.IndentedJSON(http.StatusOK, data2)
+}
+
+//Query 2
+func getMaxZipCode (c *gin.Context) {
+    queryMaxMin2Body := QueryMaxMin2Body{}
+    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetMaxZipCodeQuery2(queryMaxMin2Body.CrimeType)
+
+    c.IndentedJSON(http.StatusOK, data)
+    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
+
+}
+
+func getMinZipCode (c *gin.Context) {
+    queryMaxMin2Body := QueryMaxMin2Body{}
+    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetMinZipCodeQuery2(queryMaxMin2Body.CrimeType)
+
+    c.IndentedJSON(http.StatusOK, data)
+    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
+}
+
+func getZipCodeWithCrimeType(c *gin.Context) {
+    query2Body := Query2Body{}
+    if err:=c.BindJSON(&query2Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetZipCodeQuery2(query2Body.ZipCode, query2Body.CrimeType)
+
+    c.IndentedJSON(http.StatusOK, data)
+    // c.IndentedJSON(http.StatusOK, query2Body)
+
+}
+
+
+//Query 3
+func getMonthlyQuery3(c *gin.Context) {
+    query3Body := QueryMaxMin2Body{}
+    if err:=c.BindJSON(&query3Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetMonthlyQuery3(query3Body.CrimeType)
+
+    c.IndentedJSON(http.StatusOK, data)
+}
+
+
+//Query 4
+func getLatLongQuery4(c *gin.Context) {
+    query4Body := Query4Body{}
+    
+    if err:=c.BindJSON(&query4Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+
+    data1, data2 := models.GetLatLongQuery4(query4Body.Latitude,query4Body.Longitude, query4Body.Business, query4Body.CrimeType1, query4Body.CrimeType2)
+
+    result := returnQuery4{
+        Data1: *data1,
+        Data2: *data2,
+    }
+
+    c.IndentedJSON(http.StatusOK, result)
 }
 
 func getPoints(c *gin.Context) {
