@@ -15,7 +15,7 @@ function App() {
   const[userGraph, setUserGraph] = useState([])
 
   return (
-    <div>
+    <div className='app'>
     <UserContext.Provider value={{userGraph, setUserGraph}}>
       <Router>
         <Navbar/>
