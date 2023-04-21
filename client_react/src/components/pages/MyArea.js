@@ -20,14 +20,17 @@ const MyArea = () => {
         
         <h1> MyArea </h1>
         <button onClick={() => {window.location = '/form' }} className="button">Create Analysis</button>
+        <h4>Start by creating your own analysis!</h4>
+        
 
         <div>
+          {/* {data.length === 0 && <h4>Start by creating your own analysis!</h4> } */}
           {data && data.map((graph) => {
               return <Query2Graph zipCode={graph.zipCode} crimeType={graph.crimeType} name={graph.name}/>
-            
               
             })
           }
+
         </div>
 
     </div>

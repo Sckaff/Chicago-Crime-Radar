@@ -41,8 +41,8 @@ const MyRadar = () => {
             onChange={graphTypeHandler}
             aria-label="Platform"
             >
-            <ToggleButton value = "crime">Search Crime</ToggleButton>
-            <ToggleButton value = "business">Search Business</ToggleButton>
+            <ToggleButton value = "crime">Search Hourly Crime Rate</ToggleButton>
+            <ToggleButton value = "business">Search Surroundings</ToggleButton>
             </ToggleButtonGroup>
 
 
