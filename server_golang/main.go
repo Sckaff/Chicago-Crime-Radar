@@ -65,6 +65,8 @@ func main(){
     router.GET("/crimetypes", getCrimeTypes)
     router.GET("/zipcode", getZipCodes)
     router.GET("/surroundings", getSurroundings)
+    router.GET("/district", getDistrict)
+
     router.POST("/query1", getHourlyCrimeType)
     router.POST("/query2", getZipCodeWithCrimeType)
     router.POST("/query2Max", getMaxZipCode)
@@ -98,6 +100,11 @@ func getCrimeTypes(c *gin.Context) {
 
 func getSurroundings(c *gin.Context){
     data := models.GetSurroundings()
+    c.IndentedJSON(http.StatusOK, data)
+}
+
+func getDistrict(c *gin.Context){
+    data := models.GetDistrict()
     c.IndentedJSON(http.StatusOK, data)
 }
 
@@ -168,13 +175,13 @@ func getZipCodeWithCrimeType(c *gin.Context) {
 
 //Query 3
 func getMonthlyQuery3(c *gin.Context) {
-    query3Body := QueryMaxMin2Body{}
+    query3Body := Query2Body{}
     if err:=c.BindJSON(&query3Body);err!=nil{
         c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
         return
     }
 
-    data := models.GetMonthlyQuery3(query3Body.CrimeType)
+    data := models.GetMonthlyQuery3(query3Body.CrimeType, query3Body.ZipCode)
 
     c.IndentedJSON(http.StatusOK, data)
 }

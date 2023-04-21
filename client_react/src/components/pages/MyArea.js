@@ -3,6 +3,7 @@ import React, {useState, useContext, useEffect} from 'react'
 import './MyArea.css'
 import axios from 'axios'
 import Query2Graph from './Query2Graph'
+import Query3 from './Query3'
 
 const MyArea = () => {
   
@@ -26,8 +27,13 @@ const MyArea = () => {
         <div>
           {/* {data.length === 0 && <h4>Start by creating your own analysis!</h4> } */}
           {data && data.map((graph) => {
-              return <Query2Graph zipCode={graph.zipCode} crimeType={graph.crimeType} name={graph.name}/>
-              
+              return (
+                <div>
+                  <Query2Graph zipCode={graph.zipCode} crimeType={graph.crimeType} name={graph.name}/>
+                  <p></p>
+                  <Query3 district={graph.district} zipCode={graph.zipCode} crimeType={graph.crimeType}/>
+                </div>
+              )
             })
           }
 

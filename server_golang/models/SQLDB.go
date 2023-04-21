@@ -30,6 +30,7 @@ type CrimeTypeLatLong struct {
 }
 
 type CrimeMonthly struct {
+	District	string
 	CrimeType	string
 	Month		string
 	CountMonth	int
@@ -162,6 +163,46 @@ func GetSurroundings() *[]string {
 	return &data
 }
 
+func GetDistrict () *[]string {
+	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
+	if err != nil {
+        fmt.Println(err)
+        return nil
+    }
+
+	defer db.Close()
+
+	rows,err := db.Query("SELECT DISTINCT police_district FROM location ORDER BY police_district ASC")
+
+	if err != nil {
+
+		fmt.Println("Err", err.Error())
+
+		return nil
+
+	}
+
+	defer rows.Close()
+
+	var data []string
+
+	for rows.Next() {
+
+		var value string
+
+		err = rows.Scan(&value)
+
+		
+		if err != nil {
+			panic(err.Error())
+		}
+
+		data = append(data, value)
+
+	}
+
+	return &data
+}
 
 //Query1
 func GetHourlyCrimeTypeQuery1(hourStart string, hourEnd string, crimeType1 string, crimeType2 string) (*[]HourlyCrimeType, *[]HourlyCrimeType){
@@ -408,7 +449,7 @@ func stringInSlice(a string, list []string) bool {
 }
 
 //Query3
-func GetMonthlyQuery3(crimeType string) *[]CrimeMonthly {
+func GetMonthlyQuery3(crimeType string, zipCode string) *[]CrimeMonthly {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
         fmt.Println(err)
@@ -417,7 +458,7 @@ func GetMonthlyQuery3(crimeType string) *[]CrimeMonthly {
 
 	defer db.Close()
 
-	rows,err := db.Query("SELECT crimetype,to_char(datetime,'MM') themonth, count(*) count_in_month FROM report JOIN crime_description ON crime_description.dID = report.dID JOIN crime_type ON crime_type.cid = crime_description.cid WHERE crimetype LIKE :crimeType /* Chosen Types of Crime Here*/ GROUP BY crimetype,to_char(datetime,'MM') ORDER BY themonth asc", crimeType)
+	rows,err := db.Query("SELECT police_district,crimetype,to_char(datetime,'MM') themonth, count(*) count_in_month FROM report JOIN crime_description ON crime_description.dID = report.dID JOIN crime_type ON crime_type.cid = crime_description.cid JOIN location ON location.zipcode = report.zipcode WHERE crimetype LIKE :crimeType /* Chosen Types of Crime Here*/ AND police_district IN (SELECT police_district FROM location WHERE zipcode LIKE :zipCode /* User zipcode here */) GROUP BY police_district,crimetype,to_char(datetime,'MM') ORDER BY themonth asc", crimeType, zipCode)
 
 	if err != nil {
 
@@ -435,14 +476,12 @@ func GetMonthlyQuery3(crimeType string) *[]CrimeMonthly {
 
 		var value CrimeMonthly
 
-		err = rows.Scan(&value.CrimeType, &value.Month, &value.CountMonth)
+		err = rows.Scan(&value.District, &value.CrimeType, &value.Month, &value.CountMonth)
 
 		
 		if err != nil {
 			panic(err.Error())
 		}
-
-
 
 		data = append(data, value)
 

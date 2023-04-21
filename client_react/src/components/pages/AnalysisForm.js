@@ -17,6 +17,7 @@ const AnalysisForm = () => {
   const[crimeTypeList, setCrimeTypeList] = useState()
   const graphData = [];
   const[zipCodeList, setZipCodeList] = useState()
+  const[districtList, setDistrictList] = useState()
   let navigate = useNavigate();
 
   const crimeTypeHandler = (event) => {
@@ -66,6 +67,12 @@ const AnalysisForm = () => {
         setCrimeTypeList(response.data)
       })
     }, [])
+  
+    useEffect (() => {
+      axios.get(`http://localhost:8080/district`).then((response)=>{
+          setDistrictList(response.data)
+        })
+    }, [])
 
 
   return (
@@ -76,17 +83,16 @@ const AnalysisForm = () => {
             <label>District</label>
             
             <div className='select'>
-              <Select variant="outlined" onChange={districtHandler}  style={{ marginTop: 0, marginLeft: 0, width: 250 , color:'gray'}}>
-                <MenuItem value={1}>Select District...</MenuItem>
-                <MenuItem value={2}>Feb</MenuItem>
-                <MenuItem value={3}>March</MenuItem>
-                <MenuItem value={4}>April</MenuItem>
-                <MenuItem value={5}>May</MenuItem>
+              <Select variant="outlined" onChange={districtHandler}  style={{ marginTop: 0, marginLeft: 0, width: 250 , color:'black'}}>
+                <MenuItem value={-1}>Select District...</MenuItem>
+                {districtList && districtList.map((item)=> {
+                  return <MenuItem value={item}>{item}</MenuItem>
+                })}
               </Select>
             </div>
           </div>
 
-          <div class="or-text">OR</div>
+          {/* <div class="or-text">OR</div> */}
           
           <div className='form-group'>
             <label >Zip Code</label>
