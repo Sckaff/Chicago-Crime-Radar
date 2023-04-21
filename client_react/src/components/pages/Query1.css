@@ -31,3 +31,7 @@
     margin-top: 20px;
     font-size: 15px;
 }
+
+.timeDisplay button {
+    margin-bottom: 30px;
+}

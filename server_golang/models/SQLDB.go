@@ -6,6 +6,8 @@ import (
 	_ "github.com/godror/godror"
 
 	"fmt"
+
+	"sort"
 )
 
 type HourlyCrimeType struct{
@@ -33,7 +35,7 @@ type CrimeMonthly struct {
 	CountMonth	int
 }
 
-
+//Helper Query
 func GetCrimeTypes() *[]string {
 
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
@@ -76,6 +78,92 @@ func GetCrimeTypes() *[]string {
 	return &data
 }
 
+func GetZipCode() *[]string{
+
+	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
+	if err != nil {
+        fmt.Println(err)
+        return nil
+    }
+
+	defer db.Close()
+
+	rows,err := db.Query("SELECT zipcode FROM location ORDER BY zipcode ASC")
+
+	if err != nil {
+
+		fmt.Println("Err", err.Error())
+
+		return nil
+
+	}
+
+	defer rows.Close()
+
+	var data []string
+
+	for rows.Next() {
+
+		var value string
+
+		err = rows.Scan(&value)
+
+		
+		if err != nil {
+			panic(err.Error())
+		}
+
+		data = append(data, value)
+
+	}
+
+	return &data
+
+}
+
+func GetSurroundings() *[]string {
+	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
+	if err != nil {
+        fmt.Println(err)
+        return nil
+    }
+
+	defer db.Close()
+
+	rows,err := db.Query("SELECT surroundings FROM report GROUP BY surroundings ORDER BY COUNT(RID) DESC FETCH FIRST 25 ROWS ONLY")
+
+	if err != nil {
+
+		fmt.Println("Err", err.Error())
+
+		return nil
+
+	}
+
+	defer rows.Close()
+
+	var data []string
+
+	for rows.Next() {
+
+		var value string
+
+		err = rows.Scan(&value)
+
+		
+		if err != nil {
+			panic(err.Error())
+		}
+
+		data = append(data, value)
+
+	}
+
+	return &data
+}
+
+
+//Query1
 func GetHourlyCrimeTypeQuery1(hourStart string, hourEnd string, crimeType1 string, crimeType2 string) (*[]HourlyCrimeType, *[]HourlyCrimeType){
 
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
@@ -123,7 +211,7 @@ func GetHourlyCrimeTypeQuery1(hourStart string, hourEnd string, crimeType1 strin
 	return &data1, &data2
 }
 
-
+//Query2
 func GetZipCodeQuery2(zipCode string, crimeType string) *[]ZipCodeCrimeType {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -166,6 +254,7 @@ func GetZipCodeQuery2(zipCode string, crimeType string) *[]ZipCodeCrimeType {
 	return &data
 }
 
+//Query2
 func GetMaxZipCodeQuery2(crimeType string) *[]ZipCodeCrimeType {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -208,7 +297,7 @@ func GetMaxZipCodeQuery2(crimeType string) *[]ZipCodeCrimeType {
 	return &data
 }
 
-
+//Query2
 func GetMinZipCodeQuery2(crimeType string) *[]ZipCodeCrimeType {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -250,23 +339,75 @@ func GetMinZipCodeQuery2(crimeType string) *[]ZipCodeCrimeType {
 		fmt.Printf(value.Year)
 	}
 
-	// if len(data) != 5 {
-	// 	// temp := ZipCodeCrimeType{}
-	// 	for i := 0; i < 5-len(data); i++ {
-	// 		temp := ZipCodeCrimeType{}
-	// 		temp = {
-	// 			"Year" : 
-	// 			"Count" : 0
-	// 			"ZipCode"
+	if len(data) != 5 {
+		var years []string
+		for i:=0; i < len(data); i++ {
+			years = append(years, data[i].Year)
+		}
+		if(stringInSlice("2018", years) == false){
+			temp := ZipCodeCrimeType{
+				Year: "2018",
+				Count: 0,
+				ZipCode:  data[0].ZipCode,
+			}
 
-	// 		}
-	// 	}
-		
-	// }
+			data = append(data, temp)
+		}
+		if(stringInSlice("2019", years) == false){
+			temp := ZipCodeCrimeType{
+				Year: "2019",
+				Count: 0,
+				ZipCode:  data[0].ZipCode,
+			}
+
+			data = append(data, temp)
+		}
+		if(stringInSlice("2020", years) == false){
+			temp := ZipCodeCrimeType{
+				Year: "2020",
+				Count: 0,
+				ZipCode:  data[0].ZipCode,
+			}
+
+			data = append(data, temp)
+		}
+		if(stringInSlice("2021", years) == false){
+			temp := ZipCodeCrimeType{
+				Year: "2021",
+				Count: 0,
+				ZipCode:  data[0].ZipCode,
+			}
+
+			data = append(data, temp)
+		}
+		if(stringInSlice("2022", years) == false){
+			temp := ZipCodeCrimeType{
+				Year: "2022",
+				Count: 0,
+				ZipCode: data[0].ZipCode,
+			}
+
+			data = append(data, temp)
+		}
+	}
+
+	sort.Slice(data, func(i, j int) bool {
+		return data[i].Year < data[j].Year
+	})
 
 	return &data
 }
 
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
+
+//Query3
 func GetMonthlyQuery3(crimeType string) *[]CrimeMonthly {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -310,6 +451,7 @@ func GetMonthlyQuery3(crimeType string) *[]CrimeMonthly {
 	return &data
 }
 
+//Query4
 func GetLatLongQuery4(latitude string, longitude string, business string, crimeType1 string, crimeType2 string) (*[]CrimeTypeLatLong, *[]CrimeTypeLatLong) {
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {

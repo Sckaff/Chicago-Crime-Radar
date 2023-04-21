@@ -61,8 +61,11 @@ func main(){
     router := gin.Default()
     router.Use(cors.Default())
 
-    router.POST("/query1", getHourlyCrimeType)
+    
     router.GET("/crimetypes", getCrimeTypes)
+    router.GET("/zipcode", getZipCodes)
+    router.GET("/surroundings", getSurroundings)
+    router.POST("/query1", getHourlyCrimeType)
     router.POST("/query2", getZipCodeWithCrimeType)
     router.POST("/query2Max", getMaxZipCode)
     router.POST("/query2Min", getMinZipCode)
@@ -80,12 +83,22 @@ func main(){
 }
 
 //Helper Queries
+func getZipCodes(c *gin.Context) {
+    data := models.GetZipCode()
+    c.IndentedJSON(http.StatusOK, data)
+}
+
+
 func getCrimeTypes(c *gin.Context) {
 
     data := models.GetCrimeTypes()
 
     c.IndentedJSON(http.StatusOK, data)
+}
 
+func getSurroundings(c *gin.Context){
+    data := models.GetSurroundings()
+    c.IndentedJSON(http.StatusOK, data)
 }
 
 

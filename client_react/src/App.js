@@ -8,15 +8,12 @@ import MyRadar from './components/pages/MyRadar';
 import MyArea from './components/pages/MyArea';
 import AnalysisForm from './components/pages/AnalysisForm';
 
-import { UserContext } from './dataContext/UserContext';
 
 function App() {
 
-  const[userGraph, setUserGraph] = useState([])
 
   return (
     <div className='app'>
-    <UserContext.Provider value={{userGraph, setUserGraph}}>
       <Router>
         <Navbar/>
         <Routes>
@@ -26,7 +23,6 @@ function App() {
           <Route path="/form" element={<AnalysisForm/>}></Route>
         </Routes>
       </Router>
-    </UserContext.Provider>
     </div>
   );
 }

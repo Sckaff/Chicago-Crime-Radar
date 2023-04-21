@@ -10,7 +10,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  Label
 } from "recharts";
 
 const Query1CrimeType = () => {
@@ -36,16 +37,11 @@ const Query1CrimeType = () => {
     setHourEnd(showTime + 5)
   }
 
-  // const hourStartHandler = (event) =>{
-  //   setHourStart(event.target.value)
-  //   setHourEnd(hourStart + 5)
-  // }
-
   const hourEndHandler = (event) =>{
       setHourEnd(event.target.value)
   }
 
-  const crimeType1tHandler = (event) =>{
+  const crimeType1Handler = (event) =>{
       setCrimeType1(event.target.value)
   }
 
@@ -65,54 +61,66 @@ const Query1CrimeType = () => {
     }).then((response)=>{
       setValue(response.data)
       setShowGraph(true)
-
-      setByYear(...dataByYear(val.Data1, 2018))
-      setByYear(...dataByYear(val.Data1, 2019))
-      setByYear(...dataByYear(val.Data1, 2020))
-      setByYear(...dataByYear(val.Data1, 2021))
-      setByYear(...dataByYear(val.Data1, 2022))
       console.log(val)
     })
 
   }
 
-  // const getCrimeType = () => {
-    
-  // }
 
-  // useEffect (() => {
-  //   axios.post(`http://localhost:8080/query1`, {
-  //     hourStart: hourStart,
-  //     hourEnd: hourEnd,
-  //     crimeType1: crimeType1,
-  //     crimeType2: crimeType2
-  //   }).then((response)=>{
-  //     setValue(response.data)
-  //   })
-  // }, [])
+  const convertTime = (time) => {
+    var hours = time
+    // var hours = dt.getHours() ; // gives the value in 24 hours format
+    var AmOrPm = hours >= 12 ? 'pm' : 'am';
+    hours = (hours % 12) || 12;
+    // var minutes = dt.getMinutes() ;
+    // var finalTime = "Time  - " + hours + ":" + minutes + " " + AmOrPm; 
+    return hours// final time Time - 22:10
+  }
+
+  const getPMandAM = () => {
+    var hours = showTime
+    // var hours = dt.getHours() ; // gives the value in 24 hours format
+    var AmOrPm = hours >= 12 ? 'PM' : 'AM';
+    hours = (hours % 12) || 12;
+    // var minutes = dt.getMinutes() ;
+    // var finalTime = "Time  - " + hours + ":" + minutes + " " + AmOrPm; 
+    return AmOrPm// final time Time - 22:10
+  }
 
   const dataByYear = (tempData, year) => {
     const list = []
     tempData.map((data)=> {
-      if(data.Year == year){
-        list.append(data)
+      if(data.Year === year){
+        const temp = {
+          CrimeType: data.CrimeType,
+          Hour: convertTime(data.Hour),
+          Year: data.Year,
+          CountInHour: data.CountInHour
+        }
+        list.push(temp)
+        // list.push(data)
       }
     })
     return list
   }
 
-      useEffect (() => {
-        axios.get(`http://localhost:8080/crimetypes`).then((response)=>{
-            setCrimeTypeList(response.data)
-          })
-        }, [])
+
+
+  useEffect (() => {
+    axios.get(`http://localhost:8080/crimetypes`).then((response)=>{
+        setCrimeTypeList(response.data)
+      })
+    }, [])
+
+  
 
   return (
+
     <div className='timeDisplay'>
       {/* <button onClick={currentTimeHandler}>Use Current Time</button> */}
-      <div className='title'>Select 2 Crime Type</div>
+      <h3 className='title'>Select 2 Crime Type</h3>
       {console.log(crimeTypeList)}
-      <Select variant="outlined" onChange={crimeType1tHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
+      <Select variant="outlined" onChange={crimeType1Handler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
               <MenuItem value={-1}>Select Crime Type...</MenuItem>
               {crimeTypeList.map((crime)=> {
                 return <MenuItem value={crime}>{crime}</MenuItem>
@@ -128,78 +136,56 @@ const Query1CrimeType = () => {
 
       <button onClick={createGraph}>Create Graph</button>
 
-      {showGraph ? 
-      (<div> hello {console.log(val.Data1)} 
-          <LineChart
-        width={800}
-        height={500}
-        data={val.Data1}
 
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
+
+      {showGraph ? 
+      (<div> {console.log(val.Data1)}
+
+      <LineChart width={800} height={500}>
          
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis data= {byYear[0]} dataKey="hour"/>
-        <YAxis dataKey= "CountInHour" domain={[0, 150]} label={'Count of Crime Happen'}/>
-        {/* <Tooltip /> */}
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="CountInHour"
-          name={crimeType1}
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-        <Line data = {val.Data2} type="monotone" dataKey="CountInHour" name={crimeType2}  stroke="#82ca9d" activeDot={{ r: 10 }}/> 
-        <Line data = {byYear[0]} dataKey="CountInHour" stroke="#88ca9d" type="monotone"/>
-        {/* <Line type="monotone" dataKey="Year" stroke="#82ca9d" /> */}
+        <XAxis type='number' dataKey={"Hour"} domain={['auto','auto']}> 
+        {/* <XAxis  dataKey={"Hour"} tick={renderCustomAxisTick}>  */}
+          <Label value={`Times (:00${getPMandAM()})`} offset={-5} position="insideBottom"/>
+        </XAxis>
+        <YAxis dataKey= "CountInHour" domain={[0, 150]} >
+          <Label value="Count of Crime Type" angle={-90} position="insideLeft"/>
+        </YAxis>
+        <Tooltip />
+        <Legend  verticalAlign='top' height={65} />
+        {console.log(dataByYear(val.Data1, "2018"))}
+        {console.log(dataByYear(val.Data1, "2019"))}
+        <Line data = {dataByYear(val.Data1, "2018")} name={`${crimeType1} crime rates in 2018`} type="monotone" dataKey="CountInHour" stroke="#82ca9d" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2019")} name={`${crimeType1} crime rates in 2019`} type="monotone" dataKey="CountInHour" stroke="#090B3C" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2020")} name={`${crimeType1} crime rates in 2020`} type="monotone" dataKey="CountInHour" stroke="#BE6CDB" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2021")} name={`${crimeType1} crime rates in 2021`} type="monotone" dataKey="CountInHour" stroke="#DC2686" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2022")} name={`${crimeType1} crime rates in 2022`} type="monotone" dataKey="CountInHour" stroke="#099E9B" activeDot={{ r: 8 }}/> 
+        
       </LineChart>
-
-
-      </div>)
-      :
-      (<div></div>)
-      }
-      
-
-
-      {/* <p>OR</p>
-      <div className='inputTime'>Input Time</div>
-      <div >
-          <Select variant="outlined" onChange={hourStartHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
-              <MenuItem value={-1}>Select Hour...</MenuItem>
-              <MenuItem value={0}>12:00am</MenuItem>
-              <MenuItem value={1}>1:00am</MenuItem>
-              <MenuItem value={2}>2:00am</MenuItem>
-              <MenuItem value={3}>3:00am</MenuItem>
-              <MenuItem value={4}>4:00am</MenuItem>
-              <MenuItem value={5}>5:00am</MenuItem>
-              <MenuItem value={6}>6:00am</MenuItem>
-              <MenuItem value={7}>7:00am</MenuItem>
-              <MenuItem value={8}>8:00am</MenuItem>
-              <MenuItem value={9}>9:00am</MenuItem>
-              <MenuItem value={10}>10:00am</MenuItem>
-              <MenuItem value={11}>11:00am</MenuItem>
-              <MenuItem value={12}>12:00pm</MenuItem>
-              <MenuItem value={13}>1:00pm</MenuItem>
-              <MenuItem value={14}>2:00pm</MenuItem>
-              <MenuItem value={15}>3:00pm</MenuItem>
-              <MenuItem value={16}>4:00pm</MenuItem>
-              <MenuItem value={17}>5:00pm</MenuItem>
-              <MenuItem value={18}>6:00pm</MenuItem>
-              <MenuItem value={19}>7:00pm</MenuItem>
-              <MenuItem value={20}>8:00pm</MenuItem>
-              <MenuItem value={21}>9:00pm</MenuItem>
-              <MenuItem value={22}>10:00pm</MenuItem>
-              <MenuItem value={23}>11:00pm</MenuItem>
-          </Select>
+      <p></p>
+      <LineChart width={800} height={500}>
+         
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis type='number' dataKey={"Hour"} domain={['auto','auto']}> 
+          <Label value={`Times (:00${getPMandAM()})`} offset={-5} position="insideBottom"/>
+        </XAxis>
+        <YAxis dataKey= "CountInHour" domain={[0, 150]} >
+          <Label value="Count of Crime Type" angle={-90} position="insideLeft"/>
+        </YAxis>
+        <Tooltip />
+        <Legend  verticalAlign='top' height={65} />
+        {console.log(dataByYear(val.Data1, "2018"))}
+        {console.log(dataByYear(val.Data1, "2019"))}
+        <Line data = {dataByYear(val.Data2, "2018")} name={`${crimeType2} crime rates in 2018`} type="monotone" dataKey="CountInHour" stroke="#82ca9d" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data2, "2019")} name={`${crimeType2} crime rates in 2019`} type="monotone" dataKey="CountInHour" stroke="#090B3C" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data2, "2020")} name={`${crimeType2} crime rates in 2020`} type="monotone" dataKey="CountInHour" stroke="#BE6CDB" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data2, "2021")} name={`${crimeType2} crime rates in 2021`} type="monotone" dataKey="CountInHour" stroke="#DC2686" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data2, "2022")} name={`${crimeType2} crime rates in 2022`} type="monotone" dataKey="CountInHour" stroke="#099E9B" activeDot={{ r: 8 }}/> 
+      </LineChart>
       </div>
- */}
+      ):
+      (<div></div>)
+  }
 
 
   </div>
