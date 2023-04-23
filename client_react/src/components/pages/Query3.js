@@ -72,7 +72,6 @@ const Query3 = ({district, zipCode, crimeType}) => {
     })
     }, [resultDataMax])
 
-
     //Max Crime Rate and its District
 
     useEffect (() => {

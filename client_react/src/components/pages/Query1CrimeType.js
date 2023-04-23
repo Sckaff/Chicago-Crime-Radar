@@ -117,6 +117,7 @@ const Query1CrimeType = () => {
   return (
 
     <div className='timeDisplay'>
+      {console.log(crimeTypeList)}
       {/* <button onClick={currentTimeHandler}>Use Current Time</button> */}
       <h3 className='title'>Select 2 Crime Type</h3>
       {console.log(crimeTypeList)}
@@ -163,6 +164,7 @@ const Query1CrimeType = () => {
         
       </LineChart>
       <p></p>
+
       <LineChart width={800} height={500}>
          
         <CartesianGrid strokeDasharray="3 3" />
