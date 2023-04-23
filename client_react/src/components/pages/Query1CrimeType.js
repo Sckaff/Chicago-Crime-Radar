@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Select, MenuItem} from '@mui/material';
+import { time } from '../../dataContext/time';
 import './Query1.css'
 import axios from 'axios';
 
@@ -37,6 +38,10 @@ const Query1CrimeType = () => {
     setHourEnd(showTime + 5)
   }
 
+  const hourStartHandler = (event) => {
+    setHourStart(event.target.value)
+  }
+
   const hourEndHandler = (event) =>{
       setHourEnd(event.target.value)
   }
@@ -50,8 +55,8 @@ const Query1CrimeType = () => {
   }
 
   const createGraph = () => {
-    setHourStart(showTime)
-    setHourEnd(showTime + 4)
+    // setHourStart(showTime)
+    // setHourEnd(showTime + 4)
 
     axios.post(`http://localhost:8080/query1`, {
       hourStart: hourStart.toString(),
@@ -78,7 +83,7 @@ const Query1CrimeType = () => {
   }
 
   const getPMandAM = () => {
-    var hours = showTime
+    var hours = hourStart
     // var hours = dt.getHours() ; // gives the value in 24 hours format
     var AmOrPm = hours >= 12 ? 'PM' : 'AM';
     hours = (hours % 12) || 12;
@@ -89,11 +94,13 @@ const Query1CrimeType = () => {
 
   const dataByYear = (tempData, year) => {
     const list = []
+    
     tempData.map((data)=> {
       if(data.Year === year){
         const temp = {
           CrimeType: data.CrimeType,
           Hour: convertTime(data.Hour),
+          UnConvertedHour: data.Hour,
           Year: data.Year,
           CountInHour: data.CountInHour
         }
@@ -134,6 +141,20 @@ const Query1CrimeType = () => {
                 return <MenuItem value={crime}>{crime}</MenuItem>
               })}
       </Select>
+      <h3 className='title'>Select Times</h3>
+      <Select variant="outlined" onChange={hourStartHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
+              <MenuItem value={-1}>Select Time...</MenuItem>
+              {time.map((item)=> {
+                return <MenuItem value={item.value}>{item.selectedTime}</MenuItem>
+              })}
+      </Select>
+      <p></p>
+      <Select variant="outlined" onChange={hourEndHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
+              <MenuItem value={-1}>Select Time...</MenuItem>
+              {time.map((item)=> {
+                return <MenuItem value={item.value}>{item.selectedTime}</MenuItem>
+              })}
+      </Select>
 
       <button onClick={createGraph}>Create Graph</button>
 
@@ -145,7 +166,10 @@ const Query1CrimeType = () => {
       <LineChart width={800} height={500}>
          
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type='number' dataKey={"Hour"} domain={['auto','auto']}> 
+        {console.log(hourStart)}
+        {console.log(hourEnd)}
+        
+        <XAxis type='number' dataKey={"Hour"} domain={[dataByYear(val.Data1, "2018")[0].UnConvertedHour, dataByYear(val.Data1, "2018")[4].UnConvertedHour]}  tickCount={(hourEnd-hourStart+1)}> 
         {/* <XAxis  dataKey={"Hour"} tick={renderCustomAxisTick}>  */}
           <Label value={`Times (:00${getPMandAM()})`} offset={-5} position="insideBottom"/>
         </XAxis>
@@ -168,7 +192,7 @@ const Query1CrimeType = () => {
       <LineChart width={800} height={500}>
          
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type='number' dataKey={"Hour"} domain={['auto','auto']}> 
+        <XAxis type='number' dataKey={"Hour"} domain={[dataByYear(val.Data1, "2018")[0].UnConvertedHour, dataByYear(val.Data1, "2018")[4].UnConvertedHour]}  tickCount={(hourEnd-hourStart+1)}> 
           <Label value={`Times (:00${getPMandAM()})`} offset={-5} position="insideBottom"/>
         </XAxis>
         <YAxis dataKey= "CountInHour" domain={[0, 150]} >
