@@ -19,8 +19,8 @@ type Body struct {
 }
 
 type Query1Body struct {
-    HourStart string     `json:"hourStart"`
-    HourEnd string       `json:"hourEnd"`
+    HourStart int     `json:"hourStart"`
+    HourEnd int       `json:"hourEnd"`
     CrimeType1 string    `json:"crimeType1"`
     CrimeType2 string   `json:"crimeType2"`
 }

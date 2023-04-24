@@ -108,7 +108,11 @@ const Query4Business = () => {
     }
 
   return (
+    <div>
+    
     <div className='timeDisplay'>
+    
+  
     <h3 className='title'>Select 2 Crime Type</h3>
       {console.log(crimeTypeList)}
       <Select variant="outlined" onChange={crimeType1Handler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
@@ -190,6 +194,7 @@ const Query4Business = () => {
 
 
 
+    </div>
     </div>
   )
 }

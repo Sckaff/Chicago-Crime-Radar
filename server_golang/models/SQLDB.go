@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"sort"
+	"strconv"
 
 )
 
@@ -265,7 +266,7 @@ func GetTotalTuples() *int {
 }
 
 //Query1
-func GetHourlyCrimeTypeQuery1(hourStart string, hourEnd string, crimeType1 string, crimeType2 string) (*[]HourlyCrimeType, *[]HourlyCrimeType){
+func GetHourlyCrimeTypeQuery1(hourStart int, hourEnd int, crimeType1 string, crimeType2 string) (*[]HourlyCrimeType, *[]HourlyCrimeType){
 
 	db, err := sql.Open("godror", `user="ch.lin" password="fh5CyWai7Ppx8aIdELGDUr3m" connectString="oracle.cise.ufl.edu:1521/orcl"`)
 	if err != nil {
@@ -307,11 +308,22 @@ func GetHourlyCrimeTypeQuery1(hourStart string, hourEnd string, crimeType1 strin
 		if err != nil {
 			panic(err.Error())
 		}
+		
+		temp, _ := strconv.Atoi(value.Hour)
+		temp2:= strconv.Itoa(temp)
+
+		value2 := HourlyCrimeType{
+			CrimeType: value.CrimeType,
+			Hour: temp2,
+			Year: value.Year,
+			CountInHour: value.CountInHour,
+		}
+		value.Hour = temp2
 
 		if value.CrimeType == crimeType1{
-			data1 = append(data1, value)
+			data1 = append(data1, value2)
 		} else if value.CrimeType == crimeType2{
-			data2 = append(data2, value)
+			data2 = append(data2, value2)
 		}
 
 	}

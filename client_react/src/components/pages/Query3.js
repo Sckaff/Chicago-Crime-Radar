@@ -129,6 +129,7 @@ const Query3 = ({ district, zipCode, crimeType, startMonth, endMonth, startYear,
 
     return (
         <div>
+            <div>Query 3: Shows monthly trend queries based on annual averages collected from chosen zip code's district differentiated by whether or not they ended in an arrest.</div>
             <LineChart width={800} height={500} >
                 <CartesianGrid strokeDasharray="5 5" />
                 <XAxis type='number' dataKey={"Month"} domain={[startMonth, endMonth]} tickCount={(endMonth - startMonth) + 1} >
@@ -143,11 +144,11 @@ const Query3 = ({ district, zipCode, crimeType, startMonth, endMonth, startYear,
                 <Line data={resultData} dataKey={"Average"} name={`Arrested Average ${crimeType} rates in District ${district}`} type="monotone" stroke="blue" activeDot={{ r: 5 }} />
                 <Line data={resultDataNA} dataKey={"Average"} name={`Not Arrested Average ${crimeType} rates in District ${district}`} type="monotone" stroke="purple" activeDot={{ r: 5 }} />
 
-                <Line data={resultDataMax} dataKey={"Average"} name={`Max ${crimeType} rates is in District ${maxDistrict}`} type="monotone" stroke="black" activeDot={{ r: 5 }} />
+                {/* <Line data={resultDataMax} dataKey={"Average"} name={`Max ${crimeType} rates is in District ${maxDistrict}`} type="monotone" stroke="black" activeDot={{ r: 5 }} />
                 <Line data={resultDataMaxNA} dataKey={"Average"} name={`Max ${crimeType} rates is in District ${maxDistrict}`} type="monotone" stroke="orange" activeDot={{ r: 5 }} />
 
                 <Line data={resultDataMin} dataKey={"Average"} name={`Arrested Min ${crimeType} rates is in District ${minDistrict}`} type="monotone" stroke="red" activeDot={{ r: 5 }} />
-                <Line data={resultDataMinNA} dataKey={"Average"} name={`Not Arrested Min ${crimeType} rates is in District ${minDistrict}`} type="monotone" stroke="green" activeDot={{ r: 5 }} />
+                <Line data={resultDataMinNA} dataKey={"Average"} name={`Not Arrested Min ${crimeType} rates is in District ${minDistrict}`} type="monotone" stroke="green" activeDot={{ r: 5 }} /> */}
 
 
 

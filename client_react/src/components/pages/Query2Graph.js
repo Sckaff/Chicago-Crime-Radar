@@ -88,7 +88,7 @@ const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
         {/* <button onClick={generate}>Generate</button> */}
 
         <h2>{name}</h2>
-        
+        <div>Query 2: Shows the yearly amount of Crime X occurrences for chosen zip code, the zip code where Crime X happens most often, and the zip code where Crime X happens least often.</div>
         <LineChart width={800} height={500} >
             <CartesianGrid strokeDasharray="5 5" />
             <XAxis type='number' dataKey={"Year"} domain={['auto','auto']}> 
@@ -103,8 +103,8 @@ const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
 
 
              <Line data={resultData} dataKey="Count" name= {`${crimeType} rates in ${zipCode}`} type="monotone" stroke="blue" activeDot={{ r: 8 }}/>
-             <Line data={resultDataMax} dataKey={"Count"} name={`ZipCode with Highest Crime Rate: ${maxZipCode}`} type="monotone" stroke="black" activeDot={{ r: 10 }}/>
-             <Line data={resultDataMin} dataKey={"Count"} name={`ZipCode with Lowest Crime Rate: ${minZipCode}`} type="monotone" stroke="red" activeDot={{ r: 10 }}/>
+             <Line data={resultDataMax} dataKey={"Count"} name={`ZipCode with Highest ${crimeType} Crime Rate: ${maxZipCode}`} type="monotone" stroke="black" activeDot={{ r: 10 }}/>
+             <Line data={resultDataMin} dataKey={"Count"} name={`ZipCode with Lowest ${crimeType} Crime Rate: ${minZipCode}`} type="monotone" stroke="red" activeDot={{ r: 10 }}/>
              {/* <Line data={resultDataMax} dataKey="Count" name={`ZipCode with Highest Crime Rate: ${resultDataMax[0].ZipCode}`} type="monotone" stroke="black" activeDot={{ r: 10 }}/> */}
            
         </LineChart>
