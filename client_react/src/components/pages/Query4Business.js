@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Select, MenuItem} from '@mui/material';
+import { Select, MenuItem, TextField} from '@mui/material';
 import axios from 'axios';
 import './Query1.css'
 import {
@@ -18,11 +18,22 @@ const Query4Business = () => {
     const[surroundingsList, setSurroundingsList] = useState()
     const[latitude, setLatitude] = useState()
     const[longitude, setLongitude] = useState()
+    const[startYear, setStartYear] = useState()
+    const[endYear, setEndYear] = useState()
     const[surroundings, setSurroundings] = useState()
     const[crimeType1, setCrimeType1] = useState()
     const[crimeType2, setCrimeType2] = useState()
-    const[val, setValue] = useState()
+    const[valData1, setValueData1] = useState()
+    const[valData2, setValueData2] = useState()
     const [showGraph, setShowGraph] = useState(false)
+
+    const startYearHandler = (event) =>{
+      setStartYear(event.target.value)
+    }
+
+    const endYearHandler = (event) =>{
+      setEndYear(event.target.value)
+    }
 
     const crimeType1Handler = (event) =>{
         setCrimeType1(event.target.value)
@@ -34,6 +45,17 @@ const Query4Business = () => {
 
     const surroundingsHandler = (event) =>{
         setSurroundings(event.target.value)
+    }
+
+    const latitudeHandler = (event) =>{
+
+      setLatitude(event.target.value)
+      
+    }
+
+    const longitudeHandler = (event) =>{
+      setLongitude(event.target.value)
+    
     }
 
 
@@ -52,17 +74,35 @@ const Query4Business = () => {
 
 
     const createGraph = () => {
+        if (latitude === undefined) {
+          setLatitude(41.7)
+        }
+        if (longitude === undefined) {
+          setLongitude(-87.7)
+        }
         axios.post(`http://localhost:8080/query4`, {
-          latitude: "41.7",
-          longitude: "-87.7",
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
           business: surroundings,
           crimeType1: crimeType1,
-          crimeType2: crimeType2
+          crimeType2: crimeType2,
+          startYear: startYear,
+          endYear: endYear
         }).then((response)=>{
-          setValue(response.data)
+          setValueData1(response.data.Data1)
           setShowGraph(true)
-          
-          console.log(val)
+          setValueData2(response.data.Data2)
+
+          console.log({
+            latitude: latitude,
+            longitude: longitude,
+            business: surroundings,
+            crimeType1: crimeType1,
+            crimeType2: crimeType2,
+            startYear: startYear,
+            endYear: endYear
+          })
+
         })
     
     }
@@ -92,15 +132,43 @@ const Query4Business = () => {
               })}
       </Select>
 
+      <h3 className='title'>Select Start and End Years</h3>
+      <Select variant="outlined" onChange={startYearHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
+              <MenuItem value={-1}>Select Start Year...</MenuItem>
+              <MenuItem value={2018}>2018</MenuItem>
+              <MenuItem value={2019}>2019</MenuItem>
+              <MenuItem value={2020}>2020</MenuItem>
+              <MenuItem value={2021}>2021</MenuItem>
+              <MenuItem value={2022}>2022</MenuItem>
+      </Select>
+      <p></p>
+      <Select variant="outlined" onChange={endYearHandler}  style={{ marginTop: 0, marginLeft: 0, width: 220, height: 35 , borderBlockColor:"blue", color:"black"}}>
+              <MenuItem value={-1}>Select End Year...</MenuItem>
+              <MenuItem value={2018}>2018</MenuItem>
+              <MenuItem value={2019}>2019</MenuItem>
+              <MenuItem value={2020}>2020</MenuItem>
+              <MenuItem value={2021}>2021</MenuItem>
+              <MenuItem value={2022}>2022</MenuItem>
+      </Select>
+
+      <h3 className='title'>Select Latitude and Longitude</h3>
+      <i className='italics'>No input to use default</i>
+      {console.log(crimeTypeList)}
+      <TextField id="outlined-basic" label="Latitude" variant="outlined" onChange={latitudeHandler}></TextField>
+      {console.log(latitude)}
+      <p></p>
+      <TextField id="outlined-basic" label="Latitude" variant="outlined" onChange={longitudeHandler}></TextField>
+
+
       <button onClick={createGraph}>Create Graph</button>
 
       {showGraph ? 
-      (<div> {console.log(val.Data1)}
+      (<div>
 
-      <LineChart width={800} height={500}>
+      <LineChart width={800} height={500} >
          
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type='number' dataKey={"Year"} domain={['auto','auto']}> 
+        <XAxis type='number' dataKey={"Year"} domain={[startYear, endYear]} tickCount={(endYear - startYear) + 1}> 
           <Label value="Years" offset={-5} position="insideBottom"/>
         </XAxis>
         <YAxis dataKey= "CountYear" domain={[0, 100]} >
@@ -109,8 +177,10 @@ const Query4Business = () => {
         <Tooltip />
         <Legend  verticalAlign='top' height={40} />
     
-        <Line data = {val.Data1} name={`${crimeType1} crime rates in ${surroundings}`} type="monotone" dataKey="CountYear" stroke="#82ca9d" activeDot={{ r: 8 }}/> 
-        <Line data = {val.Data2} name={`${crimeType2} crime rates in ${surroundings}`} type="monotone" dataKey="CountYear" stroke="black" activeDot={{ r: 8 }}/> 
+        <Line data = {valData1} name={`${crimeType1} crime rates in ${surroundings}`} type="monotone" dataKey="CountYear" stroke="#82ca9d" activeDot={{ r: 5 }}/> 
+        <Line data = {valData2} name={`${crimeType2} crime rates in ${surroundings}`} type="monotone" dataKey="CountYear" stroke="black" activeDot={{ r: 5 }}/> 
+        
+
       </LineChart>
       
       </div>

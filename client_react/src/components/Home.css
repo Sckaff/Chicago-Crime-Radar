@@ -39,6 +39,7 @@
     width: 50%;
     text-align: left;
     font-size: 20px;
+    margin-top: 30px;
     
     display: flex;
     flex-direction: column;
@@ -54,6 +55,30 @@
     font-family: 'Josefin Sans';
     font-size: 15px;
     border: none;
+    margin-top: 5px;
+  }
+
+  .header-button:hover {
+    background-color: #e75994;
+    cursor: pointer;
+  }
+
+  .header-button2 {
+    text-align: left;
+
+    width: 95px;
+    height: 30px;
+    background-color: #2c2b2b;
+    color: white;
+    font-family: 'Josefin Sans';
+    font-size: 15px;
+    border: none;
+    margin-top: 5px;
+  }
+
+  .header-button2:hover {
+    background-color: #787474;
+    cursor: pointer;
   }
 
   

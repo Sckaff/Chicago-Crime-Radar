@@ -14,7 +14,7 @@ import {
     Label
   } from "recharts";
 
-const Query2Graph = ({zipCode, crimeType, name}) => {
+const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
     const[resultData, setResultData] = useState([])
     const[resultDataMax, setResultDataMax] = useState([])
     const[resultDataMin, setResultDataMin] = useState([])
@@ -29,7 +29,9 @@ const Query2Graph = ({zipCode, crimeType, name}) => {
 
     const data = {
         zipCode: zipCode,
-        crimeType: crimeType
+        crimeType: crimeType,
+        monthStart: monthStart,
+        monthEnd: monthEnd
     }
 
     useEffect (() => {
@@ -44,7 +46,9 @@ const Query2Graph = ({zipCode, crimeType, name}) => {
     }, [resultData])
 
     const data2 = {
-        crimeType: crimeType
+        crimeType: crimeType,
+        monthStart: monthStart,
+        monthEnd: monthEnd,
     }
 
     useEffect (() => {

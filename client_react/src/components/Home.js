@@ -1,7 +1,16 @@
 import React from 'react'
 import './Home.css'
+import axios from 'axios'
 
 const Home = () => {
+
+  const getTupleCount = () => {
+    axios.get(`http://localhost:8080/tuples`).then((response)=>{
+            alert("The number of tuples in the database is: " + response.data)
+        })
+    // alert("The number of tuples in the database is: ")
+  }
+
   return (
     <div className="background">
         <div className="block" >
@@ -16,10 +25,15 @@ const Home = () => {
                 To create an application that can well inform people living in Chicago and those visitings Chicago best times and 
                 areas to travel that statistically have lower crime rates.
                 <button onClick={() => window.location = '/myradar'} class="header-button">Get Started!</button>
+                
+                <button onClick={getTupleCount} class="header-button2">Get Tuples</button>
               </p>
+              
            
           </div>
+          
         </div>
+        
     </div>
   )
 }

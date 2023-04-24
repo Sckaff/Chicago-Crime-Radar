@@ -33,18 +33,39 @@ type returnQuery1 struct {
 type Query2Body struct {
     ZipCode string      `json:"zipCode"`
     CrimeType string    `json:"crimeType"`
+    MonthStart int      `json:"monthStart"`
+    MonthEnd int        `json:"monthEnd"`
 }
 
 type QueryMaxMin2Body struct {
     CrimeType string    `json:"crimeType"`
+    MonthStart int      `json:"monthStart"`
+    MonthEnd int        `json:"monthEnd"`
+}
+
+type Query3Body struct {
+    ZipCode string      `json:"zipCode"`
+    CrimeType string    `json:"crimeType"`
+    MonthStart int      `json:"monthStart"`
+    MonthEnd int        `json:"monthEnd"`
+    YearStart int       `json:"yearStart"`
+    YearEnd int         `json:"yearEnd"`
+}
+
+type returnQuery3 struct {
+    DataArrest []models.CrimeMonthlyQuery3
+    DataNotArrest  []models.CrimeMonthlyQuery3
+
 }
 
 type Query4Body struct {
-    Latitude string      `json:"latitude"`
-    Longitude string       `json:"longitude"`
+    Latitude float64        `json:"latitude"`
+    Longitude float64        `json:"longitude"`
     Business string     `json:"business"`
     CrimeType1 string   `json:"crimeType1"`
     CrimeType2 string   `json:"crimeType2"`
+    StartYear int       `json:"startYear"`
+    EndYear int         `json:"endYear"`
 }
 
 type returnQuery4 struct {
@@ -66,6 +87,7 @@ func main(){
     router.GET("/zipcode", getZipCodes)
     router.GET("/surroundings", getSurroundings)
     router.GET("/district", getDistrict)
+    router.GET("/tuples", getTotalTuples)
 
     router.POST("/query1", getHourlyCrimeType)
     router.POST("/query2", getZipCodeWithCrimeType)
@@ -108,6 +130,11 @@ func getDistrict(c *gin.Context){
     c.IndentedJSON(http.StatusOK, data)
 }
 
+func getTotalTuples(c *gin.Context){
+    data := models.GetTotalTuples()
+    c.IndentedJSON(http.StatusOK, data)
+}
+
 
 //Query 1
 func getHourlyCrimeType(c *gin.Context) {
@@ -130,34 +157,7 @@ func getHourlyCrimeType(c *gin.Context) {
     // c.IndentedJSON(http.StatusOK, data2)
 }
 
-//Query 2
-func getMaxZipCode (c *gin.Context) {
-    queryMaxMin2Body := QueryMaxMin2Body{}
-    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
-        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
-        return
-    }
-
-    data := models.GetMaxZipCodeQuery2(queryMaxMin2Body.CrimeType)
-
-    c.IndentedJSON(http.StatusOK, data)
-    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
-
-}
-
-func getMinZipCode (c *gin.Context) {
-    queryMaxMin2Body := QueryMaxMin2Body{}
-    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
-        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
-        return
-    }
-
-    data := models.GetMinZipCodeQuery2(queryMaxMin2Body.CrimeType)
-
-    c.IndentedJSON(http.StatusOK, data)
-    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
-}
-
+//Query 2 ZipCode
 func getZipCodeWithCrimeType(c *gin.Context) {
     query2Body := Query2Body{}
     if err:=c.BindJSON(&query2Body);err!=nil{
@@ -165,25 +165,60 @@ func getZipCodeWithCrimeType(c *gin.Context) {
         return
     }
 
-    data := models.GetZipCodeQuery2(query2Body.ZipCode, query2Body.CrimeType)
+    data := models.GetZipCodeQuery2(query2Body.ZipCode, query2Body.CrimeType, query2Body.MonthStart, query2Body.MonthEnd)
 
     c.IndentedJSON(http.StatusOK, data)
     // c.IndentedJSON(http.StatusOK, query2Body)
 
 }
 
+//Query 2 Max
+func getMaxZipCode (c *gin.Context) {
+    queryMaxMin2Body := QueryMaxMin2Body{}
+    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetMaxZipCodeQuery2(queryMaxMin2Body.CrimeType, queryMaxMin2Body.MonthStart, queryMaxMin2Body.MonthEnd)
+
+    c.IndentedJSON(http.StatusOK, data)
+    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
+
+}
+
+//Query 2 Min
+func getMinZipCode (c *gin.Context) {
+    queryMaxMin2Body := QueryMaxMin2Body{}
+    if err:=c.BindJSON(&queryMaxMin2Body);err!=nil{
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
+        return
+    }
+
+    data := models.GetMinZipCodeQuery2(queryMaxMin2Body.CrimeType, queryMaxMin2Body.MonthStart, queryMaxMin2Body.MonthEnd )
+
+    c.IndentedJSON(http.StatusOK, data)
+    // c.IndentedJSON(http.StatusOK, queryMaxMin2Body)
+}
+
+
+
 
 //Query 3
 func getMonthlyQuery3(c *gin.Context) {
-    query3Body := Query2Body{}
+    query3Body := Query3Body{}
     if err:=c.BindJSON(&query3Body);err!=nil{
         c.IndentedJSON(http.StatusBadRequest, gin.H{"Message": "Invalid Json Body"})
         return
     }
 
-    data := models.GetMonthlyQuery3(query3Body.CrimeType, query3Body.ZipCode)
+    dataA, dataNA := models.GetMonthlyQuery3(query3Body.CrimeType, query3Body.ZipCode, query3Body.MonthStart, query3Body.MonthEnd, query3Body.YearStart, query3Body.YearEnd)
 
-    c.IndentedJSON(http.StatusOK, data)
+    result := returnQuery3{
+        DataArrest: *dataA,
+        DataNotArrest: *dataNA,
+    }
+    c.IndentedJSON(http.StatusOK, result)
 }
 
 
@@ -197,7 +232,7 @@ func getLatLongQuery4(c *gin.Context) {
     }
 
 
-    data1, data2 := models.GetLatLongQuery4(query4Body.Latitude,query4Body.Longitude, query4Body.Business, query4Body.CrimeType1, query4Body.CrimeType2)
+    data1, data2 := models.GetLatLongQuery4(query4Body.Latitude,query4Body.Longitude, query4Body.Business, query4Body.CrimeType1, query4Body.CrimeType2, query4Body.StartYear, query4Body.EndYear)
 
     result := returnQuery4{
         Data1: *data1,
