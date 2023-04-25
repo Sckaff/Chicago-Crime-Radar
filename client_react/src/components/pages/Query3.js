@@ -136,9 +136,9 @@ const Query3 = ({ district, zipCode, crimeType, startMonth, endMonth, startYear,
                     <Label value={`Months (${months[startMonth - 1].month} - ${months[endMonth - 1].month})`} offset={-5} position="insideBottom" />
                 </XAxis>
                 <YAxis domain={[0, 100]}>
-                    <Label value="Count of Crime Type" angle={-90} position="insideLeft" />
+                    <Label value="Average of Crime Type" angle={-90} position="insideLeft" />
                 </YAxis>
-                <Legend verticalAlign='top' height={90} />
+                <Legend verticalAlign='top' height={60} />
                 <Tooltip />
 
                 <Line data={resultData} dataKey={"Average"} name={`Arrested Average ${crimeType} rates in District ${district}`} type="monotone" stroke="blue" activeDot={{ r: 5 }} />

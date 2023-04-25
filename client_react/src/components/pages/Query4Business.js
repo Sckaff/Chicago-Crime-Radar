@@ -111,7 +111,7 @@ const Query4Business = () => {
     <div>
     
     <div className='timeDisplay'>
-    
+    <div>Query 4: Shows the annual amount of X crime for a chosen time period related to Y location surroundings in an area around a specified longitude/latitude.</div>
   
     <h3 className='title'>Select 2 Crime Type</h3>
       {console.log(crimeTypeList)}
@@ -161,7 +161,7 @@ const Query4Business = () => {
       <TextField id="outlined-basic" label="Latitude" variant="outlined" onChange={latitudeHandler}></TextField>
       {console.log(latitude)}
       <p></p>
-      <TextField id="outlined-basic" label="Latitude" variant="outlined" onChange={longitudeHandler}></TextField>
+      <TextField id="outlined-basic" label="Longitude" variant="outlined" onChange={longitudeHandler}></TextField>
 
 
       <button onClick={createGraph}>Create Graph</button>

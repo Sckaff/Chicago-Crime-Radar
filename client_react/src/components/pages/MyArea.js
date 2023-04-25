@@ -30,6 +30,7 @@ const MyArea = () => {
               return (
                 <div>
                   {console.log(graph)}
+                 
                   <Query2Graph zipCode={graph.zipCode} crimeType={graph.crimeType} name={graph.name} monthStart={graph.monthStart} monthEnd={graph.monthEnd}/>
                   <p></p>
                   <Query3 district={graph.district} zipCode={graph.zipCode} crimeType={graph.crimeType} startMonth={graph.monthStart} endMonth={graph.monthEnd} startYear={graph.yearStart} endYear={graph.yearEnd}/>

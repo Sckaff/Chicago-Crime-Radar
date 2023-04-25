@@ -226,16 +226,16 @@ func GetTotalTuples() *int {
 	defer db.Close()
 
 	rows,err := db.Query(`SELECT SUM(cnt)
-	FROM (
-	  SELECT COUNT(*) AS cnt FROM report
-	  UNION ALL
-	  SELECT COUNT(*) AS cnt FROM crime_type
-	  UNION ALL
-	  SELECT COUNT(*) AS cnt FROM crime_description
-	  UNION ALL
-	  SELECT COUNT(*) AS cnt FROM location
-	)
-	`)
+							FROM (
+							SELECT COUNT(*) AS cnt FROM report
+							UNION ALL
+							SELECT COUNT(*) AS cnt FROM crime_type
+							UNION ALL
+							SELECT COUNT(*) AS cnt FROM crime_description
+							UNION ALL
+							SELECT COUNT(*) AS cnt FROM location
+							)
+						`)
 
 	if err != nil {
 
@@ -265,6 +265,17 @@ func GetTotalTuples() *int {
 
 }
 
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
+//End of Helper Query
+
+
 //Query1
 func GetHourlyCrimeTypeQuery1(hourStart int, hourEnd int, crimeType1 string, crimeType2 string) (*[]HourlyCrimeType, *[]HourlyCrimeType){
 
@@ -276,11 +287,16 @@ func GetHourlyCrimeTypeQuery1(hourStart int, hourEnd int, crimeType1 string, cri
 
 	defer db.Close()
 
-	rows,err := db.Query(`SELECT crimetype,to_char(datetime,'HH24') thehour,to_char(datetime,'YYYY') theyear, count(*) count_in_hour 
-						  FROM report JOIN crime_description ON crime_description.dID = report.dID 
-						  	JOIN crime_type ON crime_type.cid = crime_description.cid 
-						  WHERE (crimetype LIKE :crimeType1 OR crimetype LIKE :crimeType2) 
-						  	AND (to_char(datetime,'HH24') >= :hourStart AND to_char(datetime,'HH24') <= :hourEnd) 
+	rows,err := db.Query(`SELECT crimetype,to_char(datetime,'HH24') thehour,to_char(datetime,'YYYY') 
+							theyear, count(*) count_in_hour 
+						  FROM report JOIN crime_description 
+						  	ON crime_description.dID = report.dID 
+						  	JOIN crime_type 
+							ON crime_type.cid = crime_description.cid 
+						  WHERE (crimetype LIKE :crimeType1 
+							OR crimetype LIKE :crimeType2) 
+						  	AND (to_char(datetime,'HH24') >= :hourStart 
+							AND to_char(datetime,'HH24') <= :hourEnd) 
 						  GROUP BY crimetype,to_char(datetime,'YYYY'),to_char(datetime,'HH24') 
 						  ORDER BY thehour asc`, 
 						  crimeType1, crimeType2, hourStart, hourEnd)
@@ -601,16 +617,6 @@ func GetMinZipCodeQuery2(crimeType string, monthStart int, monthEnd int) *[]ZipC
 	})
 
 	return &data
-}
-
-//Helper Query
-func stringInSlice(a string, list []string) bool {
-    for _, b := range list {
-        if b == a {
-            return true
-        }
-    }
-    return false
 }
 
 //Query3

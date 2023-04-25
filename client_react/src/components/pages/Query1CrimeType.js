@@ -192,11 +192,11 @@ const Query1CrimeType = () => {
         <Legend  verticalAlign='top' height={65} />
        
 
-        <Line data = {dataByYear(val.Data1, "2018")} name={`${crimeType2} crime rates in 2018`} type="monotone" dataKey="CountInHour" stroke="#82ca9d" activeDot={{ r: 8 }}/> 
-        <Line data = {dataByYear(val.Data1, "2019")} name={`${crimeType2} crime rates in 2019`} type="monotone" dataKey="CountInHour" stroke="#090B3C" activeDot={{ r: 8 }}/> 
-        <Line data = {dataByYear(val.Data1, "2020")} name={`${crimeType2} crime rates in 2020`} type="monotone" dataKey="CountInHour" stroke="#BE6CDB" activeDot={{ r: 8 }}/> 
-        <Line data = {dataByYear(val.Data1, "2021")} name={`${crimeType2} crime rates in 2021`} type="monotone" dataKey="CountInHour" stroke="#DC2686" activeDot={{ r: 8 }}/> 
-        <Line data = {dataByYear(val.Data1, "2022")} name={`${crimeType2} crime rates in 2022`} type="monotone" dataKey="CountInHour" stroke="#099E9B" activeDot={{ r: 8 }}/>  
+        <Line data = {dataByYear(val.Data1, "2018")} name={`${crimeType1} crime rates in 2018`} type="monotone" dataKey="CountInHour" stroke="#82ca9d" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2019")} name={`${crimeType1} crime rates in 2019`} type="monotone" dataKey="CountInHour" stroke="#090B3C" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2020")} name={`${crimeType1} crime rates in 2020`} type="monotone" dataKey="CountInHour" stroke="#BE6CDB" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2021")} name={`${crimeType1} crime rates in 2021`} type="monotone" dataKey="CountInHour" stroke="#DC2686" activeDot={{ r: 8 }}/> 
+        <Line data = {dataByYear(val.Data1, "2022")} name={`${crimeType1} crime rates in 2022`} type="monotone" dataKey="CountInHour" stroke="#099E9B" activeDot={{ r: 8 }}/>  
         
       </LineChart>
       <p></p>

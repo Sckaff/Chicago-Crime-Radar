@@ -77,6 +77,7 @@ const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
 
 
   return (
+    
     <div className='graphs'>
         {console.log("Start")}
         {console.log(resultData)}
@@ -89,6 +90,7 @@ const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
 
         <h2>{name}</h2>
         <div>Query 2: Shows the yearly amount of Crime X occurrences for chosen zip code, the zip code where Crime X happens most often, and the zip code where Crime X happens least often.</div>
+        
         <LineChart width={800} height={500} >
             <CartesianGrid strokeDasharray="5 5" />
             <XAxis type='number' dataKey={"Year"} domain={['auto','auto']}> 
@@ -97,7 +99,7 @@ const Query2Graph = ({zipCode, crimeType, name, monthStart, monthEnd}) => {
             <YAxis domain={[0, 100]}>
                 <Label value="Count of Crime Type" angle={-90} position="insideLeft"/>
             </YAxis>
-            <Legend  verticalAlign='top' height={45}/>
+            <Legend  verticalAlign='top' height={70}/>
             <Tooltip/>
 
 
