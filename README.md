@@ -2,6 +2,8 @@
 
 Chicago Crime Radar is a full-stack web application that provides data-driven insights on crime trends and neighborhood safety levels in Chicago. It analyzes a large crime dataset from 2018 to 2022 and presents the information through an interactive user interface.
 
+![UI Preview](ui-preview.png)
+
 ## Features
 
 - **Crime Data Analysis**: The application cleans and analyzes the crime dataset using Python, performing tasks such as data engineering, exploratory analysis, and complex querying.
